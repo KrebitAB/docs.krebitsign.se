@@ -1,0 +1,218 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Krebit Sign API documentation",
+        "description": "This is the API documentation for the Krebit Sign API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://{organization}.krebit.se",
+            "description": "Krebit Sign API server",
+            "variables": {
+                "organization": {
+                    "default": "{organization}",
+                    "description": "The organization to use"
+                }
+            }
+        }
+    ],
+    "paths": {
+        "/api/1.0/signings": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Gets a list of signings",
+                "description": "Display a listing of the resource.",
+                "operationId": "getSignings",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The number of signings to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SigningCollectionResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Get a signing",
+                "description": "Display the specified signing.",
+                "operationId": "getSigning",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SigningResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SigningCollectionResource": {
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "language": {
+                        "type": "string",
+                        "example": "en"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Please sign this document"
+                    },
+                    "signing_order": {
+                        "type": "string",
+                        "example": "parallel"
+                    },
+                    "is_completed": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_cancelled": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "SigningResource": {
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "language": {
+                        "type": "string",
+                        "example": "en"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Please sign this document"
+                    },
+                    "signing_order": {
+                        "type": "string",
+                        "example": "parallel"
+                    },
+                    "is_completed": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_cancelled": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Signings",
+            "description": "Operations related to signings"
+        }
+    ]
+}
