@@ -87,6 +87,48 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Create a new signing draft",
+                "description": "Create a new signing draft.",
+                "operationId": "createSigning",
+                "requestBody": {
+                    "description": "Data required to create a signing draft",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SigningStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Signing draft created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SigningResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "400": {
+                        "description": "Invalid input data provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/1.0/signings/{uuid}": {
@@ -142,28 +184,54 @@
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
                     },
                     "name": {
+                        "description": "The name of the signing",
                         "type": "string",
-                        "example": "John Doe"
+                        "example": "The contract"
+                    },
+                    "is_draft": {
+                        "description": "Whether or not this signing is a draft",
+                        "type": "boolean",
+                        "example": false
                     },
                     "language": {
                         "type": "string",
+                        "enum": [
+                            "en",
+                            "sv"
+                        ],
                         "example": "en"
                     },
                     "message": {
+                        "description": "Message sent to the end user together with the signing link",
                         "type": "string",
                         "example": "Please sign this document"
                     },
                     "signing_order": {
                         "type": "string",
+                        "enum": [
+                            "parallel",
+                            "sequential"
+                        ],
                         "example": "parallel"
                     },
                     "is_completed": {
                         "type": "boolean",
                         "example": false
                     },
-                    "is_cancelled": {
-                        "type": "boolean",
-                        "example": false
+                    "cancelled_at": {
+                        "description": "The date when this signing was cancelled",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "created_at": {
+                        "description": "The date when this signing was created",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The date when this signing was last updated",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
                     }
                 },
                 "type": "object"
@@ -175,28 +243,90 @@
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
                     },
                     "name": {
+                        "description": "The name of the signing",
                         "type": "string",
-                        "example": "John Doe"
+                        "example": "The contract"
+                    },
+                    "is_draft": {
+                        "description": "Whether or not this signing is a draft",
+                        "type": "boolean",
+                        "example": false
                     },
                     "language": {
                         "type": "string",
+                        "enum": [
+                            "en",
+                            "sv"
+                        ],
                         "example": "en"
                     },
                     "message": {
+                        "description": "Message sent to the end user together with the signing link",
                         "type": "string",
                         "example": "Please sign this document"
                     },
                     "signing_order": {
                         "type": "string",
+                        "enum": [
+                            "parallel",
+                            "sequential"
+                        ],
                         "example": "parallel"
                     },
                     "is_completed": {
                         "type": "boolean",
                         "example": false
                     },
-                    "is_cancelled": {
-                        "type": "boolean",
-                        "example": false
+                    "cancelled_at": {
+                        "description": "The date when this signing was cancelled",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "created_at": {
+                        "description": "The date when this signing was created",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The date when this signing was last updated",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningStoreRequest": {
+                "required": [
+                    "name",
+                    "language",
+                    "signing_order"
+                ],
+                "properties": {
+                    "name": {
+                        "description": "The name of the signing",
+                        "type": "string",
+                        "example": "The contract"
+                    },
+                    "language": {
+                        "type": "string",
+                        "enum": [
+                            "en",
+                            "sv"
+                        ],
+                        "example": "en"
+                    },
+                    "message": {
+                        "description": "Message sent to the end user together with the signing link",
+                        "type": "string",
+                        "example": "Please sign this document"
+                    },
+                    "signing_order": {
+                        "type": "string",
+                        "enum": [
+                            "parallel",
+                            "sequential"
+                        ],
+                        "example": "parallel"
                     }
                 },
                 "type": "object"
