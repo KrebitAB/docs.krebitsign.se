@@ -18,6 +18,36 @@
         }
     ],
     "paths": {
+        "/api/1.0/me": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Gets the current user",
+                "description": "Display a listing of the resource.",
+                "operationId": "getCurrentUser",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/1.0/signings": {
             "get": {
                 "tags": [
@@ -219,6 +249,21 @@
     },
     "components": {
         "schemas": {
+            "UserResource": {
+                "properties": {
+                    "name": {
+                        "description": "Name of the user",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "Email of the user",
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    }
+                },
+                "type": "object"
+            },
             "SigningCollectionResource": {
                 "properties": {
                     "uuid": {
@@ -418,6 +463,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Users",
+            "description": "Operations related to users"
+        },
         {
             "name": "Signings",
             "description": "Operations related to signings"
