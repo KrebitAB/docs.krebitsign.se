@@ -245,6 +245,240 @@
                     }
                 ]
             }
+        },
+        "/api/1.0/signings/{uuid}/recipients": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Gets a list of signing recipients",
+                "description": "Display a listing of the resource.",
+                "operationId": "getRecipients",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The number of signings to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SignerCollectionResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Create a new recipient",
+                "description": "Create a new recipient",
+                "operationId": "createRecipient",
+                "requestBody": {
+                    "description": "Data required to create a recipient",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignerStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SignerResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/recipients/{recipientUuid}": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Get a specific recipient from a signing",
+                "description": "Get a specific signer from a signing",
+                "operationId": "getRecipient",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SignerResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Update a recipient",
+                "description": "Update the specified signing in storage.",
+                "operationId": "updateRecipient",
+                "requestBody": {
+                    "description": "Data required to update a recipient",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignerUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Recipient updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignerResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "400": {
+                        "description": "Invalid input data provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Delete a recipient",
+                "description": "Update the specified signing in storage.",
+                "operationId": "deleteRecipient",
+                "responses": {
+                    "200": {
+                        "description": "Recipient deleted successfully"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "400": {
+                        "description": "Invalid input data provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -260,6 +494,115 @@
                         "description": "Email of the user",
                         "type": "string",
                         "example": "john.doe@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "SignerCollectionResource": {
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "first_name": {
+                        "description": "First name of the recipient",
+                        "type": "string",
+                        "example": "Peter"
+                    },
+                    "last_name": {
+                        "description": "Last name of the recipient",
+                        "type": "string",
+                        "example": "Peterson"
+                    },
+                    "email": {
+                        "description": "The recipient's email",
+                        "type": "string",
+                        "example": "peter@example.com"
+                    },
+                    "phone": {
+                        "description": "The recipient's phone number",
+                        "type": "string",
+                        "example": "+46111111111",
+                        "nullable": true
+                    },
+                    "signing_method": {
+                        "description": "The signing method for the recipient",
+                        "type": "string",
+                        "enum": [
+                            "approval",
+                            "bankid",
+                            "email"
+                        ],
+                        "example": "bankid"
+                    },
+                    "order": {
+                        "description": "The signing order of the recipient",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "description": "The date when this signing was created",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The date when this signing was last updated",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "SignerResource": {
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "first_name": {
+                        "description": "First name of the recipient",
+                        "type": "string",
+                        "example": "Peter"
+                    },
+                    "last_name": {
+                        "description": "Last name of the recipient",
+                        "type": "string",
+                        "example": "Peterson"
+                    },
+                    "email": {
+                        "description": "The recipient's email",
+                        "type": "string",
+                        "example": "peter@example.com"
+                    },
+                    "phone": {
+                        "description": "The recipient's phone number",
+                        "type": "string",
+                        "example": "+46111111111"
+                    },
+                    "signing_method": {
+                        "description": "The signing method for the recipient",
+                        "type": "string",
+                        "enum": [
+                            "approval",
+                            "bankid",
+                            "email"
+                        ],
+                        "example": false
+                    },
+                    "order": {
+                        "description": "The signing order of the recipient",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "description": "The date when this signing was created",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The date when this signing was last updated",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
                     }
                 },
                 "type": "object"
@@ -378,6 +721,78 @@
                         "description": "The date when this signing was last updated",
                         "type": "string",
                         "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "SignerStoreRequest": {
+                "properties": {
+                    "first_name": {
+                        "description": "The first name of the signer",
+                        "type": "string",
+                        "example": "Peter"
+                    },
+                    "last_name": {
+                        "description": "The last name of the signer",
+                        "type": "string",
+                        "example": "Pettersson"
+                    },
+                    "email": {
+                        "description": "The email of the signer",
+                        "type": "string",
+                        "example": "peter@example.com"
+                    },
+                    "phone": {
+                        "description": "The phone number of the signer",
+                        "type": "string",
+                        "example": "+46111111111",
+                        "nullable": true
+                    },
+                    "signing_method": {
+                        "description": "The signing method which the recipient shall use",
+                        "type": "string",
+                        "enum": [
+                            "approval",
+                            "bankid",
+                            "email"
+                        ],
+                        "example": "bankid"
+                    }
+                },
+                "type": "object"
+            },
+            "SignerUpdateRequest": {
+                "properties": {
+                    "first_name": {
+                        "description": "The first name of the signer",
+                        "type": "string",
+                        "example": "Peter"
+                    },
+                    "last_name": {
+                        "description": "The last name of the signer",
+                        "type": "string",
+                        "example": "Pettersson"
+                    },
+                    "email": {
+                        "description": "The email of the signer",
+                        "type": "string",
+                        "example": "peter@example.com"
+                    },
+                    "phone": {
+                        "description": "The phone number of the signer",
+                        "type": "string",
+                        "example": "+46111111111",
+                        "nullable": true
+                    },
+                    "signing_method": {
+                        "description": "The signing method which the recipient shall use",
+                        "type": "string",
+                        "enum": [
+                            "approval",
+                            "bankid",
+                            "email"
+                        ],
+                        "example": "bankid"
                     }
                 },
                 "type": "object"
