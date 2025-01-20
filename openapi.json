@@ -48,6 +48,199 @@
                 ]
             }
         },
+        "/api/1.0/webhooks": {
+            "get": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Gets a list of webhooks",
+                "description": "Display a listing of the resource.",
+                "operationId": "getWebhooks",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The number of webhooks to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/WebhookCollectionResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Create a new webhook",
+                "description": "Create a new webhook.",
+                "operationId": "createWebhook",
+                "requestBody": {
+                    "description": "Data required to create a webhook",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebhookStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Webhook created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WebhookResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "400": {
+                        "description": "Invalid input data provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/webhooks/{uuid}": {
+            "get": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Get a webhook",
+                "description": "Display the specified webhook.",
+                "operationId": "getWebhook",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the webhook",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WebhookResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Delete a webhook",
+                "description": "Delete the specified webhook.",
+                "operationId": "deleteWebhook",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the webhook",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Webhook deleted successfully"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "404": {
+                        "description": "Webhook not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/1.0/signings": {
             "get": {
                 "tags": [
@@ -244,6 +437,120 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Delete a draft",
+                "description": "Delete the specified draft signing",
+                "operationId": "deleteSigning",
+                "responses": {
+                    "200": {
+                        "description": "Draft deleted successfully"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/send": {
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Send a signing draft for signing",
+                "description": "Send the specified signing to all recipients",
+                "operationId": "sendSigning",
+                "responses": {
+                    "201": {
+                        "description": "Signing draft sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SigningResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "400": {
+                        "description": "Invalid input data provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/cancel": {
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Cancel a signing",
+                "description": "Cancel the specified signing",
+                "operationId": "cancelSigning",
+                "requestBody": {
+                    "description": "Data required to cancel a signing",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SigningCancelRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Signing cancelled successfully"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/remind-unsigned": {
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Remind all unsigned recipients of the signing",
+                "description": "Remind all unsigned recipients",
+                "operationId": "remindUnsigned",
+                "responses": {
+                    "200": {
+                        "description": "All unsigned recipients were reminded successfully"
+                    },
+                    "400": {
+                        "description": "The signing cannot be signed"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/1.0/signings/{uuid}/recipients": {
@@ -258,7 +565,7 @@
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "The number of signings to return",
+                        "description": "The number of signers to return",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -479,10 +786,361 @@
                     }
                 ]
             }
+        },
+        "/api/1.0/signings/{uuid}/recipients/{recipientUuid}/remind": {
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Remind a recipient",
+                "description": "Remind a recipient",
+                "operationId": "remindRecipient",
+                "responses": {
+                    "200": {
+                        "description": "The recipient was reminded successfully"
+                    },
+                    "400": {
+                        "description": "The signing cannot be signed, all decisions have already been made or the user have not received a signing link yet"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/documents": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Gets a list of signing documents",
+                "description": "Display a listing of documents.",
+                "operationId": "getDocuments",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The number of documents to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number to return",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DocumentCollectionResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Create a new document",
+                "description": "Create a new document",
+                "operationId": "createDocument",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "schema": "DocumentStoreRequest",
+                                "properties": {
+                                    "selected_file": {
+                                        "description": "The document you want to upload",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DocumentResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/documents/{documentUuid}": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Get a specific document from a signing",
+                "description": "Get a specific Document from a signing",
+                "operationId": "getDocument",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DocumentResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Delete a document",
+                "description": "Removed the specified document from storage",
+                "operationId": "deleteDocument",
+                "responses": {
+                    "200": {
+                        "description": "Document deleted successfully"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/documents/{documentUuid}/download-original": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Download the original document",
+                "description": "Download the original document",
+                "operationId": "downloadOriginalDocument",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "documentUuid",
+                        "in": "path",
+                        "description": "The UUID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/pdf": {}
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "404": {
+                        "description": "Document not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/documents/{documentUuid}/download-signed": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Download the signed document",
+                "description": "Download the signed document",
+                "operationId": "downloadSignedDocument",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "documentUuid",
+                        "in": "path",
+                        "description": "The UUID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/pdf": {}
+                        }
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    },
+                    "404": {
+                        "description": "Document not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "WebhookStoreRequest": {
+                "required": [
+                    "event",
+                    "target"
+                ],
+                "properties": {
+                    "event": {
+                        "type": "string",
+                        "enum": [
+                            "signing.sent",
+                            "signing.cancelled",
+                            "signing.document.completed"
+                        ],
+                        "example": "document.completed"
+                    },
+                    "target": {
+                        "type": "string",
+                        "example": "https://example.com/webhook"
+                    }
+                },
+                "type": "object"
+            },
             "UserResource": {
                 "properties": {
                     "name": {
@@ -498,9 +1156,145 @@
                 },
                 "type": "object"
             },
+            "WebhookCollectionResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "oauth_client_id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "event": {
+                        "type": "string",
+                        "example": "document.completed"
+                    },
+                    "target": {
+                        "type": "string",
+                        "example": "https://example.com/webhook"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "oauth_client_id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "event": {
+                        "type": "string",
+                        "example": "document.completed"
+                    },
+                    "target": {
+                        "type": "string",
+                        "example": "https://example.com/webhook"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "DocumentCollectionResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "name": {
+                        "description": "The document's name",
+                        "type": "string",
+                        "example": "Contract.pdf"
+                    },
+                    "completed_at": {
+                        "description": "The date when all signatures were completed",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "created_at": {
+                        "description": "The date when this signing was created",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The date when this signing was last updated",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "DocumentResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "signing_id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "name": {
+                        "description": "The document's name",
+                        "type": "string",
+                        "example": "Contract.pdf"
+                    },
+                    "completed_at": {
+                        "description": "The date when all signatures were completed",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "created_at": {
+                        "description": "The date when this signing was created",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The date when this signing was last updated",
+                        "type": "string",
+                        "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
             "SignerCollectionResource": {
                 "properties": {
-                    "uuid": {
+                    "id": {
                         "type": "string",
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
                     },
@@ -555,7 +1349,7 @@
             },
             "SignerResource": {
                 "properties": {
-                    "uuid": {
+                    "id": {
                         "type": "string",
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
                     },
@@ -609,7 +1403,7 @@
             },
             "SigningCollectionResource": {
                 "properties": {
-                    "uuid": {
+                    "id": {
                         "type": "string",
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
                     },
@@ -626,10 +1420,10 @@
                     "language": {
                         "type": "string",
                         "enum": [
-                            "en",
-                            "sv"
+                            "EN",
+                            "SV"
                         ],
-                        "example": "en"
+                        "example": "EN"
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -668,7 +1462,7 @@
             },
             "SigningResource": {
                 "properties": {
-                    "uuid": {
+                    "id": {
                         "type": "string",
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
                     },
@@ -685,10 +1479,10 @@
                     "language": {
                         "type": "string",
                         "enum": [
-                            "en",
-                            "sv"
+                            "EN",
+                            "SV"
                         ],
-                        "example": "en"
+                        "example": "EN"
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -721,6 +1515,19 @@
                         "description": "The date when this signing was last updated",
                         "type": "string",
                         "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningCancelRequest": {
+                "required": [
+                    "message"
+                ],
+                "properties": {
+                    "message": {
+                        "description": "The message sent with cancel",
+                        "type": "string",
+                        "example": "There was a typo in the document so a new link will be sent to you shortly!"
                     }
                 },
                 "type": "object"
@@ -812,10 +1619,10 @@
                     "language": {
                         "type": "string",
                         "enum": [
-                            "en",
-                            "sv"
+                            "EN",
+                            "SV"
                         ],
-                        "example": "en"
+                        "example": "EN"
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -848,10 +1655,10 @@
                     "language": {
                         "type": "string",
                         "enum": [
-                            "en",
-                            "sv"
+                            "EN",
+                            "SV"
                         ],
-                        "example": "en"
+                        "example": "EN"
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -881,6 +1688,10 @@
         {
             "name": "Users",
             "description": "Operations related to users"
+        },
+        {
+            "name": "Webhooks",
+            "description": "Operations related to webhooks"
         },
         {
             "name": "Signings",
