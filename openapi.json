@@ -142,7 +142,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebhookResource"
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/WebhookResource"
+                                        },
+                                        "secret": {
+                                            "description": "The secret key used to validate signatures in webhook calls.",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1350,6 +1359,10 @@
             "SignerResource": {
                 "properties": {
                     "id": {
+                        "type": "string",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "signing_id": {
                         "type": "string",
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
                     },
