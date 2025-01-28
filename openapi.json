@@ -148,7 +148,8 @@
                                         },
                                         "secret": {
                                             "description": "The secret key used to validate signatures in webhook calls.",
-                                            "type": "string"
+                                            "type": "string",
+                                            "example": "48ez4Rjz7pt2jguhuBHpoIm7rfKGGv1KxiG8UWRB"
                                         }
                                     },
                                     "type": "object"
