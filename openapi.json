@@ -1137,12 +1137,7 @@
                 "properties": {
                     "event": {
                         "type": "string",
-                        "enum": [
-                            "signing.sent",
-                            "signing.cancelled",
-                            "signing.document.completed"
-                        ],
-                        "example": "document.completed"
+                        "example": "event"
                     },
                     "target": {
                         "type": "string",
@@ -1182,7 +1177,7 @@
                     },
                     "event": {
                         "type": "string",
-                        "example": "document.completed"
+                        "example": "event"
                     },
                     "target": {
                         "type": "string",
@@ -1219,7 +1214,7 @@
                     },
                     "event": {
                         "type": "string",
-                        "example": "document.completed"
+                        "example": "event"
                     },
                     "target": {
                         "type": "string",
