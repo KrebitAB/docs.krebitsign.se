@@ -11,8 +11,8 @@
             "description": "Krebit Sign API server",
             "variables": {
                 "organization": {
-                    "default": "{organization}",
-                    "description": "The organization to use"
+                    "default": "krebit",
+                    "description": "Organization subdomain"
                 }
             }
         }
@@ -413,6 +413,19 @@
                 "summary": "Update a signing draft",
                 "description": "Update the specified signing in storage.",
                 "operationId": "updateSigning",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Data required to update a signing draft",
                     "required": true,
@@ -455,6 +468,19 @@
                 "summary": "Delete a draft",
                 "description": "Delete the specified draft signing",
                 "operationId": "deleteSigning",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Draft deleted successfully"
@@ -478,6 +504,19 @@
                 "summary": "Send a signing draft for signing",
                 "description": "Send the specified signing to all recipients",
                 "operationId": "sendSigning",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Signing draft sent successfully",
@@ -511,6 +550,19 @@
                 "summary": "Cancel a signing",
                 "description": "Cancel the specified signing",
                 "operationId": "cancelSigning",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Data required to cancel a signing",
                     "required": true,
@@ -545,6 +597,19 @@
                 "summary": "Remind all unsigned recipients of the signing",
                 "description": "Remind all unsigned recipients",
                 "operationId": "remindUnsigned",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "All unsigned recipients were reminded successfully"
@@ -572,6 +637,17 @@
                 "description": "Display a listing of the resource.",
                 "operationId": "getRecipients",
                 "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
                     {
                         "name": "limit",
                         "in": "query",
@@ -640,6 +716,19 @@
                 "summary": "Create a new recipient",
                 "description": "Create a new recipient",
                 "operationId": "createRecipient",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Data required to create a recipient",
                     "required": true,
@@ -695,6 +784,30 @@
                 "summary": "Get a specific recipient from a signing",
                 "description": "Get a specific signer from a signing",
                 "operationId": "getRecipient",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "recipientUuid",
+                        "in": "path",
+                        "description": "The UUID of the recipient",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -737,6 +850,30 @@
                 "summary": "Update a recipient",
                 "description": "Update the specified signing in storage.",
                 "operationId": "updateRecipient",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "recipientUuid",
+                        "in": "path",
+                        "description": "The UUID of the recipient",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Data required to update a recipient",
                     "required": true,
@@ -779,6 +916,30 @@
                 "summary": "Delete a recipient",
                 "description": "Update the specified signing in storage.",
                 "operationId": "deleteRecipient",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "recipientUuid",
+                        "in": "path",
+                        "description": "The UUID of the recipient",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Recipient deleted successfully"
@@ -805,6 +966,30 @@
                 "summary": "Remind a recipient",
                 "description": "Remind a recipient",
                 "operationId": "remindRecipient",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "recipientUuid",
+                        "in": "path",
+                        "description": "The UUID of the recipient",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "The recipient was reminded successfully"
@@ -832,6 +1017,17 @@
                 "description": "Display a listing of documents.",
                 "operationId": "getDocuments",
                 "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
                     {
                         "name": "limit",
                         "in": "query",
@@ -900,6 +1096,19 @@
                 "summary": "Create a new document",
                 "description": "Create a new document",
                 "operationId": "createDocument",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "",
                     "required": true,
@@ -963,6 +1172,30 @@
                 "summary": "Get a specific document from a signing",
                 "description": "Get a specific Document from a signing",
                 "operationId": "getDocument",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "documentUuid",
+                        "in": "path",
+                        "description": "The UUID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1005,6 +1238,30 @@
                 "summary": "Delete a document",
                 "description": "Removed the specified document from storage",
                 "operationId": "deleteDocument",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "documentUuid",
+                        "in": "path",
+                        "description": "The UUID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Document deleted successfully"
