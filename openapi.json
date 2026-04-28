@@ -1115,15 +1115,7 @@
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "schema": "DocumentStoreRequest",
-                                "properties": {
-                                    "selected_file": {
-                                        "description": "The document you want to upload",
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/DocumentStoreRequest"
                             }
                         }
                     }
@@ -1313,7 +1305,12 @@
                     "200": {
                         "description": "Successful operation",
                         "content": {
-                            "application/pdf": {}
+                            "application/pdf": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
                         }
                     },
                     "401": {
@@ -1366,7 +1363,12 @@
                     "200": {
                         "description": "Successful operation",
                         "content": {
-                            "application/pdf": {}
+                            "application/pdf": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
                         }
                     },
                     "401": {
@@ -1794,6 +1796,19 @@
                         "description": "The message sent with cancel",
                         "type": "string",
                         "example": "There was a typo in the document so a new link will be sent to you shortly!"
+                    }
+                },
+                "type": "object"
+            },
+            "DocumentStoreRequest": {
+                "required": [
+                    "selected_file"
+                ],
+                "properties": {
+                    "selected_file": {
+                        "description": "The document you want to upload",
+                        "type": "string",
+                        "format": "binary"
                     }
                 },
                 "type": "object"
