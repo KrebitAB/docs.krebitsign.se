@@ -18,7 +18,7 @@
         }
     ],
     "paths": {
-        "/oauth/token": {
+        "/api/oauth/token": {
             "post": {
                 "tags": [
                     "OAuth"
@@ -2113,8 +2113,8 @@
                 "flows": {
                     "authorizationCode": {
                         "authorizationUrl": "/oauth/authorize",
-                        "tokenUrl": "/oauth/token",
-                        "refreshUrl": "/oauth/token",
+                        "tokenUrl": "/api/oauth/token",
+                        "refreshUrl": "/api/oauth/token",
                         "scopes": {}
                     }
                 }
