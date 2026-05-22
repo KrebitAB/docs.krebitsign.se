@@ -1,14 +1,14 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Krebit Sign API documentation",
-        "description": "This is the API documentation for the Krebit Sign API",
+        "title": "Krebit Sign",
+        "description": "API documentation for Krebit Sign",
         "version": "1.0.0"
     },
     "servers": [
         {
             "url": "https://{organization}.krebit.se",
-            "description": "Krebit Sign API server",
+            "description": "API server",
             "variables": {
                 "organization": {
                     "default": "krebit",
@@ -1854,6 +1854,11 @@
                         ],
                         "example": "parallel"
                     },
+                    "completion_redirect_url": {
+                        "description": "HTTPS URL where a signer may be redirected after completing their tasks",
+                        "type": "string",
+                        "example": "https://example.com/thank-you"
+                    },
                     "is_completed": {
                         "type": "boolean",
                         "example": false
@@ -1912,6 +1917,11 @@
                             "sequential"
                         ],
                         "example": "parallel"
+                    },
+                    "completion_redirect_url": {
+                        "description": "HTTPS URL where a signer may be redirected after completing their tasks",
+                        "type": "string",
+                        "example": "https://example.com/thank-you"
                     },
                     "is_completed": {
                         "type": "boolean",
@@ -2065,6 +2075,11 @@
                             "sequential"
                         ],
                         "example": "parallel"
+                    },
+                    "completion_redirect_url": {
+                        "description": "HTTPS URL on a verified organization domain where a signer may be redirected after completing their tasks",
+                        "type": "string",
+                        "example": "https://example.com/thank-you"
                     }
                 },
                 "type": "object"
@@ -2101,6 +2116,11 @@
                             "sequential"
                         ],
                         "example": "parallel"
+                    },
+                    "completion_redirect_url": {
+                        "description": "HTTPS URL on a verified organization domain where a signer may be redirected after completing their tasks",
+                        "type": "string",
+                        "example": "https://example.com/thank-you"
                     }
                 },
                 "type": "object"
