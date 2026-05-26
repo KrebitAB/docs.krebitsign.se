@@ -1060,6 +1060,70 @@
                 ]
             }
         },
+        "/api/1.0/signings/{uuid}/recipients/{recipientUuid}/signing-link": {
+            "post": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Generate a direct signing link for a recipient",
+                "description": "Generate a direct signing link for a recipient.",
+                "operationId": "createRecipientSigningLink",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                        }
+                    },
+                    {
+                        "name": "recipientUuid",
+                        "in": "path",
+                        "description": "The UUID of the recipient",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Signing link generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "signing_link": {
+                                            "type": "string",
+                                            "format": "uri",
+                                            "example": "https://sign.krebit.se/signing/d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b/sign?token=eyJhbGciOiJSUzI1NiJ9"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The signing link is not available for this recipient"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/1.0/signings/{uuid}/documents": {
             "get": {
                 "tags": [
