@@ -1,5 +1,5 @@
 {
-    "openapi": "3.0.0",
+    "openapi": "3.2.0",
     "info": {
         "title": "Krebit Sign",
         "description": "API documentation for Krebit Sign",
@@ -196,7 +196,8 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/WebhookResource"
+                                            "$ref": "#/components/schemas/WebhookResource",
+                                            "description": "Details of the created webhook."
                                         },
                                         "secret": {
                                             "description": "The secret key used to validate signatures in webhook calls.",
@@ -1504,6 +1505,31 @@
     },
     "components": {
         "schemas": {
+            "WebhookEventEnvelope": {
+                "required": [
+                    "id",
+                    "event",
+                    "data"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier for this webhook event.",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "event": {
+                        "description": "Name of the webhook event.",
+                        "type": "string",
+                        "example": "event.name"
+                    },
+                    "data": {
+                        "description": "Event-specific payload.",
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "OAuthTokenRequest": {
                 "required": [
                     "grant_type",
@@ -1513,11 +1539,11 @@
                     "grant_type": {
                         "description": "Use authorization_code to exchange an authorization code, or refresh_token to refresh an access token.",
                         "type": "string",
+                        "example": "authorization_code",
                         "enum": [
                             "authorization_code",
                             "refresh_token"
-                        ],
-                        "example": "authorization_code"
+                        ]
                     },
                     "client_id": {
                         "description": "The OAuth client ID.",
@@ -1706,6 +1732,120 @@
                 },
                 "type": "object"
             },
+            "SigningSentWebhookData": {
+                "required": [
+                    "signing"
+                ],
+                "properties": {
+                    "signing": {
+                        "$ref": "#/components/schemas/SigningResource"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningSentWebhookPayload": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEventEnvelope"
+                    },
+                    {
+                        "required": [
+                            "event",
+                            "data"
+                        ],
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "example": "signing.sent",
+                                "const": "signing.sent"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/SigningSentWebhookData"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "SigningDocumentCompletedWebhookData": {
+                "required": [
+                    "document"
+                ],
+                "properties": {
+                    "document": {
+                        "$ref": "#/components/schemas/DocumentResource"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningDocumentCompletedWebhookPayload": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEventEnvelope"
+                    },
+                    {
+                        "required": [
+                            "event",
+                            "data"
+                        ],
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "example": "signing.document.completed",
+                                "const": "signing.document.completed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/SigningDocumentCompletedWebhookData"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "SigningCancelledWebhookData": {
+                "required": [
+                    "cancel_message",
+                    "signing"
+                ],
+                "properties": {
+                    "cancel_message": {
+                        "description": "Message sent to signers when the signing was cancelled.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "The signing was cancelled."
+                    },
+                    "signing": {
+                        "$ref": "#/components/schemas/SigningResource"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningCancelledWebhookPayload": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEventEnvelope"
+                    },
+                    {
+                        "required": [
+                            "event",
+                            "data"
+                        ],
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "example": "signing.cancelled",
+                                "const": "signing.cancelled"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/SigningCancelledWebhookData"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
             "DocumentCollectionResource": {
                 "properties": {
                     "id": {
@@ -1791,19 +1931,21 @@
                     },
                     "phone": {
                         "description": "The recipient's phone number",
-                        "type": "string",
-                        "example": "+46111111111",
-                        "nullable": true
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "+46111111111"
                     },
                     "signing_method": {
                         "description": "The signing method for the recipient",
                         "type": "string",
+                        "example": "bankid",
                         "enum": [
                             "approval",
                             "bankid",
                             "email"
-                        ],
-                        "example": "bankid"
+                        ]
                     },
                     "order": {
                         "description": "The signing order of the recipient",
@@ -1856,12 +1998,12 @@
                     "signing_method": {
                         "description": "The signing method for the recipient",
                         "type": "string",
+                        "example": false,
                         "enum": [
                             "approval",
                             "bankid",
                             "email"
-                        ],
-                        "example": false
+                        ]
                     },
                     "order": {
                         "description": "The signing order of the recipient",
@@ -1899,11 +2041,11 @@
                     },
                     "language": {
                         "type": "string",
+                        "example": "EN",
                         "enum": [
                             "EN",
                             "SV"
-                        ],
-                        "example": "EN"
+                        ]
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -1912,11 +2054,11 @@
                     },
                     "signing_order": {
                         "type": "string",
+                        "example": "parallel",
                         "enum": [
                             "parallel",
                             "sequential"
-                        ],
-                        "example": "parallel"
+                        ]
                     },
                     "completion_redirect_url": {
                         "description": "HTTPS URL where a signer may be redirected after completing their tasks",
@@ -1963,11 +2105,11 @@
                     },
                     "language": {
                         "type": "string",
+                        "example": "EN",
                         "enum": [
                             "EN",
                             "SV"
-                        ],
-                        "example": "EN"
+                        ]
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -1976,11 +2118,11 @@
                     },
                     "signing_order": {
                         "type": "string",
+                        "example": "parallel",
                         "enum": [
                             "parallel",
                             "sequential"
-                        ],
-                        "example": "parallel"
+                        ]
                     },
                     "completion_redirect_url": {
                         "description": "HTTPS URL where a signer may be redirected after completing their tasks",
@@ -2054,19 +2196,21 @@
                     },
                     "phone": {
                         "description": "The phone number of the signer",
-                        "type": "string",
-                        "example": "+46111111111",
-                        "nullable": true
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "+46111111111"
                     },
                     "signing_method": {
                         "description": "The signing method which the recipient shall use",
                         "type": "string",
+                        "example": "bankid",
                         "enum": [
                             "approval",
                             "bankid",
                             "email"
-                        ],
-                        "example": "bankid"
+                        ]
                     }
                 },
                 "type": "object"
@@ -2090,19 +2234,21 @@
                     },
                     "phone": {
                         "description": "The phone number of the signer",
-                        "type": "string",
-                        "example": "+46111111111",
-                        "nullable": true
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "+46111111111"
                     },
                     "signing_method": {
                         "description": "The signing method which the recipient shall use",
                         "type": "string",
+                        "example": "bankid",
                         "enum": [
                             "approval",
                             "bankid",
                             "email"
-                        ],
-                        "example": "bankid"
+                        ]
                     }
                 },
                 "type": "object"
@@ -2121,11 +2267,11 @@
                     },
                     "language": {
                         "type": "string",
+                        "example": "EN",
                         "enum": [
                             "EN",
                             "SV"
-                        ],
-                        "example": "EN"
+                        ]
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -2134,11 +2280,11 @@
                     },
                     "signing_order": {
                         "type": "string",
+                        "example": "parallel",
                         "enum": [
                             "parallel",
                             "sequential"
-                        ],
-                        "example": "parallel"
+                        ]
                     },
                     "completion_redirect_url": {
                         "description": "HTTPS URL on a verified organization domain where a signer may be redirected after completing their tasks",
@@ -2162,11 +2308,11 @@
                     },
                     "language": {
                         "type": "string",
+                        "example": "EN",
                         "enum": [
                             "EN",
                             "SV"
-                        ],
-                        "example": "EN"
+                        ]
                     },
                     "message": {
                         "description": "Message sent to the end user together with the signing link",
@@ -2175,11 +2321,11 @@
                     },
                     "signing_order": {
                         "type": "string",
+                        "example": "parallel",
                         "enum": [
                             "parallel",
                             "sequential"
-                        ],
-                        "example": "parallel"
+                        ]
                     },
                     "completion_redirect_url": {
                         "description": "HTTPS URL on a verified organization domain where a signer may be redirected after completing their tasks",
@@ -2188,6 +2334,49 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "parameters": {
+            "WebhookSignatureHeader": {
+                "name": "X-Signature",
+                "in": "header",
+                "description": "HMAC SHA-256 signature of the JSON request body, generated with the webhook secret.",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "5f734a24766a8f01d4f40fbe91b1b93d69f43f58d7e8dcbb4d31ea35bf9f3f89"
+                }
+            },
+            "WebhookClientIdHeader": {
+                "name": "X-Client-Id",
+                "in": "header",
+                "description": "OAuth client ID associated with the webhook registration.",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                }
+            },
+            "WebhookUserAgentHeader": {
+                "name": "User-Agent",
+                "in": "header",
+                "description": "Krebit webhook delivery user agent.",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "Krebit/1.0"
+                }
+            },
+            "WebhookContentTypeHeader": {
+                "name": "Content-Type",
+                "in": "header",
+                "description": "Webhook requests are delivered as JSON.",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "application/json"
+                }
             }
         },
         "securitySchemes": {
@@ -2225,6 +2414,129 @@
         {
             "name": "Signings",
             "description": "Operations related to signings"
+        },
+        {
+            "name": "Webhook events",
+            "description": "Webhook events"
         }
-    ]
+    ],
+    "webhooks": {
+        "signing.sent": {
+            "post": {
+                "tags": [
+                    "Webhook events"
+                ],
+                "summary": "Signing sent",
+                "description": "Krebit sends this event when a signing is sent to its recipients.",
+                "operationId": "signingSentWebhook",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/WebhookSignatureHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookClientIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookUserAgentHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookContentTypeHeader"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SigningSentWebhookPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Return a non-4xx/non-5xx response to mark delivery successful."
+                    }
+                }
+            }
+        },
+        "signing.document.completed": {
+            "post": {
+                "tags": [
+                    "Webhook events"
+                ],
+                "summary": "Signing document completed",
+                "description": "Krebit sends this event when all signatures for a signing document are completed.",
+                "operationId": "signingDocumentCompletedWebhook",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/WebhookSignatureHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookClientIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookUserAgentHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookContentTypeHeader"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SigningDocumentCompletedWebhookPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Return a non-4xx/non-5xx response to mark delivery successful."
+                    }
+                }
+            }
+        },
+        "signing.cancelled": {
+            "post": {
+                "tags": [
+                    "Webhook events"
+                ],
+                "summary": "Signing cancelled",
+                "description": "Krebit sends this event when a signing is cancelled.",
+                "operationId": "signingCancelledWebhook",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/WebhookSignatureHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookClientIdHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookUserAgentHeader"
+                    },
+                    {
+                        "$ref": "#/components/parameters/WebhookContentTypeHeader"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SigningCancelledWebhookPayload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Return a non-4xx/non-5xx response to mark delivery successful."
+                    }
+                }
+            }
+        }
+    }
 }

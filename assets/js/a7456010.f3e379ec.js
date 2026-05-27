@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkkrebit_apidocs=globalThis.webpackChunkkrebit_apidocs||[]).push([[1235],{88552(s){s.exports=JSON.parse('{"name":"docusaurus-plugin-content-pages","id":"default"}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkkrebit_apidocs=globalThis.webpackChunkkrebit_apidocs||[]).push([[957],{40936(a){a.exports=JSON.parse('{"name":"docusaurus-theme-search-algolia","id":"default"}')}}]);
