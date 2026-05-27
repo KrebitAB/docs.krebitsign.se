@@ -141,21 +141,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/WebhookCollectionResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/WebhookCollectionResponse"
                                 }
                             }
                         }
@@ -194,18 +180,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/WebhookResource",
-                                            "description": "Details of the created webhook."
-                                        },
-                                        "secret": {
-                                            "description": "The secret key used to validate signatures in webhook calls.",
-                                            "type": "string",
-                                            "example": "48ez4Rjz7pt2jguhuBHpoIm7rfKGGv1KxiG8UWRB"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/WebhookCreatedResponse"
                                 }
                             }
                         }
@@ -345,21 +320,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/SigningCollectionResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/SigningCollectionResponse"
                                 }
                             }
                         }
@@ -491,7 +452,7 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Signing draft updated successfully",
                         "content": {
                             "application/json": {
@@ -571,7 +532,7 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Signing draft sent successfully",
                         "content": {
                             "application/json": {
@@ -733,21 +694,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/SignerCollectionResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/SignerCollectionResponse"
                                 }
                             }
                         }
@@ -794,26 +741,12 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Successful operation",
+                    "201": {
+                        "description": "Recipient created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/SignerResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/SignerResource"
                                 }
                             }
                         }
@@ -867,21 +800,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/SignerResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/SignerResource"
                                 }
                             }
                         }
@@ -939,8 +858,18 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Recipient updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignerResource"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Replacement recipient created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1099,14 +1028,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "signing_link": {
-                                            "type": "string",
-                                            "format": "uri",
-                                            "example": "https://sign.krebit.se/signing/d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b/sign?token=eyJhbGciOiJSUzI1NiJ9"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/RecipientSigningLinkResponse"
                                 }
                             }
                         }
@@ -1177,21 +1099,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/DocumentCollectionResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/DocumentCollectionResponse"
                                 }
                             }
                         }
@@ -1238,26 +1146,12 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Successful operation",
+                    "201": {
+                        "description": "Document created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/DocumentResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/DocumentResource"
                                 }
                             }
                         }
@@ -1311,21 +1205,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/DocumentResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/DocumentResource"
                                 }
                             }
                         }
@@ -1626,6 +1506,46 @@
                 },
                 "type": "object"
             },
+            "WebhookCollectionResponse": {
+                "required": [
+                    "data",
+                    "links",
+                    "meta"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookCollectionResource"
+                        }
+                    },
+                    "links": {
+                        "type": "object"
+                    },
+                    "meta": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookCreatedResponse": {
+                "required": [
+                    "data",
+                    "secret"
+                ],
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/WebhookResource",
+                        "description": "Details of the created webhook."
+                    },
+                    "secret": {
+                        "description": "The secret key used to validate signatures in webhook calls.",
+                        "type": "string",
+                        "example": "48ez4Rjz7pt2jguhuBHpoIm7rfKGGv1KxiG8UWRB"
+                    }
+                },
+                "type": "object"
+            },
             "WebhookStoreRequest": {
                 "required": [
                     "event",
@@ -1728,6 +1648,85 @@
                     "updated_at": {
                         "type": "string",
                         "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningCollectionResponse": {
+                "required": [
+                    "data",
+                    "links",
+                    "meta"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SigningCollectionResource"
+                        }
+                    },
+                    "links": {
+                        "type": "object"
+                    },
+                    "meta": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "SignerCollectionResponse": {
+                "required": [
+                    "data",
+                    "links",
+                    "meta"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SignerCollectionResource"
+                        }
+                    },
+                    "links": {
+                        "type": "object"
+                    },
+                    "meta": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RecipientSigningLinkResponse": {
+                "required": [
+                    "signing_link"
+                ],
+                "properties": {
+                    "signing_link": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://sign.krebit.se/signing/d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b/sign?token=eyJhbGciOiJSUzI1NiJ9"
+                    }
+                },
+                "type": "object"
+            },
+            "DocumentCollectionResponse": {
+                "required": [
+                    "data",
+                    "links",
+                    "meta"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentCollectionResource"
+                        }
+                    },
+                    "links": {
+                        "type": "object"
+                    },
+                    "meta": {
+                        "type": "object"
                     }
                 },
                 "type": "object"
