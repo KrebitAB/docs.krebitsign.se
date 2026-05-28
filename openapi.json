@@ -868,16 +868,6 @@
                             }
                         }
                     },
-                    "201": {
-                        "description": "Replacement recipient created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SignerResource"
-                                }
-                            }
-                        }
-                    },
                     "401": {
                         "description": "A valid authentication token was not provided with the request"
                     },
@@ -931,6 +921,72 @@
                     },
                     "400": {
                         "description": "Invalid input data provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/recipients/{recipientUuid}/order": {
+            "put": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Update recipient order",
+                "description": "Update the order of a draft recipient within its recipient type group.",
+                "operationId": "updateRecipientOrder",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "recipientUuid",
+                        "in": "path",
+                        "description": "The UUID of the recipient",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "The new zero-based order within the recipient type group",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignerOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Recipient order updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignerResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The signing cannot be edited"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
                     }
                 },
                 "security": [
@@ -1254,6 +1310,58 @@
                 "responses": {
                     "200": {
                         "description": "Document deleted successfully"
+                    },
+                    "401": {
+                        "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/documents/{documentUuid}/signatures": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Get signatures for a signing document",
+                "description": "List signatures recorded for a completed signing document.",
+                "operationId": "getDocumentSignatures",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the signing",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "documentUuid",
+                        "in": "path",
+                        "description": "The UUID of the document",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignatureCollectionResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "A valid authentication token was not provided with the request"
@@ -1731,6 +1839,20 @@
                 },
                 "type": "object"
             },
+            "SignatureCollectionResponse": {
+                "required": [
+                    "data"
+                ],
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SignatureResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "SigningSentWebhookData": {
                 "required": [
                     "signing"
@@ -1907,6 +2029,79 @@
                 },
                 "type": "object"
             },
+            "SignatureResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "document_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "recipient_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "e4e4e4e4-4e4e-4e4e-4e4e-4e4e4e4e4e4e"
+                    },
+                    "recipient_first_name": {
+                        "type": "string",
+                        "example": "Peter"
+                    },
+                    "recipient_last_name": {
+                        "type": "string",
+                        "example": "Pettersson"
+                    },
+                    "recipient_email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "peter@example.com"
+                    },
+                    "method": {
+                        "type": "string",
+                        "example": "bankid",
+                        "enum": [
+                            "bankid",
+                            "email"
+                        ]
+                    },
+                    "ip_address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "127.0.0.1"
+                    },
+                    "user_agent": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "Mozilla/5.0"
+                    },
+                    "signed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2021-09-01T12:00:00Z"
+                    },
+                    "bankid_signer_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "Peter Pettersson"
+                    },
+                    "bankid_personal_number": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "199001010017"
+                    }
+                },
+                "type": "object"
+            },
             "SignerCollectionResource": {
                 "properties": {
                     "id": {
@@ -1928,14 +2123,6 @@
                         "type": "string",
                         "example": "peter@example.com"
                     },
-                    "phone": {
-                        "description": "The recipient's phone number",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "example": "+46111111111"
-                    },
                     "signing_method": {
                         "description": "The signing method for the recipient",
                         "type": "string",
@@ -1946,10 +2133,55 @@
                             "email"
                         ]
                     },
+                    "require_identification": {
+                        "description": "Whether the recipient must identify before opening the signing",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "identification_method": {
+                        "description": "The identification method required before opening the signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "bankid",
+                        "enum": [
+                            "bankid",
+                            "email"
+                        ]
+                    },
+                    "personal_number": {
+                        "description": "Swedish personal number used to constrain BankID identification or signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "199001010017"
+                    },
                     "order": {
                         "description": "The signing order of the recipient",
                         "type": "integer",
                         "example": 1
+                    },
+                    "email_delivery_status": {
+                        "description": "Latest tracked delivery status for the recipient email",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "email_delivery_last_event_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "email_delivery_error": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "created_at": {
                         "description": "The date when this signing was created",
@@ -1989,11 +2221,6 @@
                         "type": "string",
                         "example": "peter@example.com"
                     },
-                    "phone": {
-                        "description": "The recipient's phone number",
-                        "type": "string",
-                        "example": "+46111111111"
-                    },
                     "signing_method": {
                         "description": "The signing method for the recipient",
                         "type": "string",
@@ -2004,10 +2231,55 @@
                             "email"
                         ]
                     },
+                    "require_identification": {
+                        "description": "Whether the recipient must identify before opening the signing",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "identification_method": {
+                        "description": "The identification method required before opening the signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "bankid",
+                        "enum": [
+                            "bankid",
+                            "email"
+                        ]
+                    },
+                    "personal_number": {
+                        "description": "Swedish personal number used to constrain BankID identification or signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "199001010017"
+                    },
                     "order": {
                         "description": "The signing order of the recipient",
                         "type": "integer",
                         "example": 1
+                    },
+                    "email_delivery_status": {
+                        "description": "Latest tracked delivery status for the recipient email",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "email_delivery_last_event_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "email_delivery_error": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "created_at": {
                         "description": "The date when this signing was created",
@@ -2176,6 +2448,19 @@
                 },
                 "type": "object"
             },
+            "SignerOrderRequest": {
+                "required": [
+                    "order"
+                ],
+                "properties": {
+                    "order": {
+                        "description": "Zero-based order within the recipient type group",
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
             "SignerStoreRequest": {
                 "properties": {
                     "first_name": {
@@ -2193,14 +2478,6 @@
                         "type": "string",
                         "example": "peter@example.com"
                     },
-                    "phone": {
-                        "description": "The phone number of the signer",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "example": "+46111111111"
-                    },
                     "signing_method": {
                         "description": "The signing method which the recipient shall use",
                         "type": "string",
@@ -2210,6 +2487,31 @@
                             "bankid",
                             "email"
                         ]
+                    },
+                    "require_identification": {
+                        "description": "Whether the recipient must identify before opening the signing",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "identification_method": {
+                        "description": "The identification method required before opening the signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "bankid",
+                        "enum": [
+                            "bankid",
+                            "email"
+                        ]
+                    },
+                    "personal_number": {
+                        "description": "Swedish personal number used to constrain BankID identification or signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "199001010017"
                     }
                 },
                 "type": "object"
@@ -2231,14 +2533,6 @@
                         "type": "string",
                         "example": "peter@example.com"
                     },
-                    "phone": {
-                        "description": "The phone number of the signer",
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "example": "+46111111111"
-                    },
                     "signing_method": {
                         "description": "The signing method which the recipient shall use",
                         "type": "string",
@@ -2248,6 +2542,31 @@
                             "bankid",
                             "email"
                         ]
+                    },
+                    "require_identification": {
+                        "description": "Whether the recipient must identify before opening the signing",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "identification_method": {
+                        "description": "The identification method required before opening the signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "bankid",
+                        "enum": [
+                            "bankid",
+                            "email"
+                        ]
+                    },
+                    "personal_number": {
+                        "description": "Swedish personal number used to constrain BankID identification or signing",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "199001010017"
                     }
                 },
                 "type": "object"
