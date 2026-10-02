@@ -279,6 +279,369 @@
                 ]
             }
         },
+        "/api/1.0/contract-templates": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "List contract templates",
+                "description": "List contract templates.",
+                "operationId": "listContractTemplates",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractCollectionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Access denied"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "422": {
+                        "description": "Invalid request or field values"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/contract-templates/{contractTemplate}": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Get template fields",
+                "description": "Get template fields.",
+                "operationId": "getContractTemplate",
+                "parameters": [
+                    {
+                        "name": "contractTemplate",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Access denied"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "422": {
+                        "description": "Invalid request or field values"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{signing}/contracts": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "List contracts in a signing",
+                "description": "List contracts in a signing.",
+                "operationId": "listContracts",
+                "parameters": [
+                    {
+                        "name": "signing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractCollectionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Access denied"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "422": {
+                        "description": "Invalid request or field values"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Create a contract from a template",
+                "description": "Creates a draft contract from a template, with optional prefilled values. Send it using the signing endpoint. Each request creates a new contract.",
+                "operationId": "createContract",
+                "parameters": [
+                    {
+                        "name": "signing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Access denied"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "422": {
+                        "description": "Invalid request or field values"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{signing}/contracts/{signingContract}": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Get contract field values",
+                "description": "Returns the contract and its field values, including values entered during signing.",
+                "operationId": "getContract",
+                "parameters": [
+                    {
+                        "name": "signing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "signingContract",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Access denied"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "422": {
+                        "description": "Invalid request or field values"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{signing}/contracts/{signingContract}/fields": {
+            "put": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Update draft field values",
+                "description": "Updates draft fields using keys or field IDs. If any field is invalid, no changes are saved.",
+                "operationId": "updateContractFields",
+                "parameters": [
+                    {
+                        "name": "signing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "signingContract",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractFieldsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Access denied"
+                    },
+                    "404": {
+                        "description": "Resource not found"
+                    },
+                    "422": {
+                        "description": "Invalid request or field values"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/1.0/signings": {
             "get": {
                 "tags": [
@@ -1967,11 +2330,147 @@
                     }
                 ]
             },
+            "ContractFieldResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "key": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "customer_name"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "form_field_text",
+                            "form_field_email",
+                            "form_field_select",
+                            "form_field_radio"
+                        ]
+                    },
+                    "value": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "locked": {
+                        "description": "True prevents recipient edits. Sender prefill is still allowed.",
+                        "type": "boolean"
+                    },
+                    "choices": {
+                        "description": "Present for select and radio fields.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ContractResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "is_template": {
+                        "type": "boolean"
+                    },
+                    "completed_at": {
+                        "description": "When the contract was finalized as a PDF.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "signed_at": {
+                        "description": "When all signatures on the generated document were completed.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "generated_document_id": {
+                        "description": "ID of the generated document.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "fields": {
+                        "description": "Included in detail, creation and field-update responses.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractFieldResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "ContractCollectionResponse": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractResource"
+                        }
+                    },
+                    "links": {
+                        "type": "object"
+                    },
+                    "meta": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "DocumentCollectionResource": {
                 "properties": {
                     "id": {
                         "type": "string",
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "contract_id": {
+                        "description": "Source contract ID, or null when unavailable. Use it to retrieve contract field values.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
                     },
                     "name": {
                         "description": "The document's name",
@@ -2005,6 +2504,14 @@
                     "signing_id": {
                         "type": "string",
                         "example": "d3b3b3b3-3b3b-3b3b-3b3b-3b3b3b3b3b3b"
+                    },
+                    "contract_id": {
+                        "description": "Source contract ID, or null when unavailable. Use it to retrieve contract field values.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
                     },
                     "name": {
                         "description": "The document's name",
@@ -2422,6 +2929,76 @@
                 },
                 "type": "object"
             },
+            "ContractStoreRequest": {
+                "required": [
+                    "template_id"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ContractFieldsRequest"
+                    },
+                    {
+                        "properties": {
+                            "template_id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "name": {
+                                "type": "string",
+                                "maxLength": 255
+                            },
+                            "fields": {
+                                "description": "Optional initial values, addressed by template field key or UUID. Omitted fields retain template defaults.",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ContractFieldInput"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "ContractFieldInput": {
+                "required": [
+                    "value"
+                ],
+                "properties": {
+                    "key": {
+                        "description": "Field key. Supply exactly one of key or id.",
+                        "type": "string",
+                        "example": "customer_name"
+                    },
+                    "id": {
+                        "description": "Template field UUID at creation; copied field UUID when updating.",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "value": {
+                        "description": "Null clears the value; omitted fields are unchanged.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "ContractFieldsRequest": {
+                "required": [
+                    "fields"
+                ],
+                "properties": {
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractFieldInput"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "SigningCancelRequest": {
                 "required": [
                     "message"
@@ -2728,6 +3305,10 @@
         {
             "name": "Webhooks",
             "description": "Operations related to webhooks"
+        },
+        {
+            "name": "Contracts",
+            "description": "These endpoints require the contracts feature to be enabled for your organization."
         },
         {
             "name": "Signings",
