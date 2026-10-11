@@ -2028,6 +2028,7 @@
                         "example": "event"
                     },
                     "target": {
+                        "description": "An HTTPS webhook URL.",
                         "type": "string",
                         "example": "https://example.com/webhook"
                     }
