@@ -343,8 +343,8 @@
                 "tags": [
                     "Contracts"
                 ],
-                "summary": "Get template fields",
-                "description": "Get template fields.",
+                "summary": "Get a contract template",
+                "description": "Get template fields and, on request, the document structure.",
                 "operationId": "getContractTemplate",
                 "parameters": [
                     {
@@ -354,6 +354,17 @@
                         "schema": {
                             "type": "string",
                             "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "Include the ordered block tree.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "blocks"
+                            ]
                         }
                     }
                 ],
@@ -460,7 +471,7 @@
                     "Contracts"
                 ],
                 "summary": "Create a contract from a template",
-                "description": "Creates a draft contract from a template, with optional prefilled values. Send it using the signing endpoint. Each request creates a new contract.",
+                "description": "Creates a draft contract from a template with optional prefilled values. The draft inherits the template’s block keys. Each request creates a new contract.",
                 "operationId": "createContract",
                 "parameters": [
                     {
@@ -519,7 +530,7 @@
                 "tags": [
                     "Contracts"
                 ],
-                "summary": "Get contract field values",
+                "summary": "Get a contract",
                 "description": "Returns the contract and its field values, including values entered during signing.",
                 "operationId": "getContract",
                 "parameters": [
@@ -539,6 +550,17 @@
                         "schema": {
                             "type": "string",
                             "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "Include the ordered block tree.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "blocks"
+                            ]
                         }
                     }
                 ],
@@ -573,14 +595,83 @@
                 ]
             }
         },
-        "/api/1.0/signings/{signing}/contracts/{signingContract}/fields": {
-            "put": {
+        "/api/1.0/signings/{signing}/contracts/{signingContract}/blocks/{block}": {
+            "get": {
                 "tags": [
                     "Contracts"
                 ],
-                "summary": "Update draft field values",
-                "description": "Updates draft fields using keys or field IDs. If any field is invalid, no changes are saved.",
-                "operationId": "updateContractFields",
+                "summary": "Get a contract block",
+                "description": "Read a contract block using its UUID or integration key.",
+                "operationId": "getContractBlock",
+                "parameters": [
+                    {
+                        "name": "signing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "signingContract",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "block",
+                        "in": "path",
+                        "description": "The block UUID or integration key.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "intro_text"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Contract block",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContractBlockResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Access denied"
+                    },
+                    "404": {
+                        "description": "Signing, contract or block not found"
+                    },
+                    "409": {
+                        "description": "More than one block matches the key. Use a block UUID."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{signing}/contracts/{signingContract}/blocks": {
+            "patch": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Update draft blocks",
+                "description": "Update one or more blocks by integration key or UUID. Use content for text blocks and value for form fields. For existing contract images, use the attachment-id attribute. The batch is saved only if every update is valid.",
+                "operationId": "updateContractBlocks",
                 "parameters": [
                     {
                         "name": "signing",
@@ -606,18 +697,18 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ContractFieldsRequest"
+                                "$ref": "#/components/schemas/ContractBlocksUpdateRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Updated blocks in request order",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ContractResource"
+                                    "$ref": "#/components/schemas/ContractBlocksUpdateResponse"
                                 }
                             }
                         }
@@ -626,13 +717,16 @@
                         "description": "Authentication required"
                     },
                     "403": {
-                        "description": "Access denied"
+                        "description": "The draft cannot be edited"
                     },
                     "404": {
-                        "description": "Resource not found"
+                        "description": "Signing, contract or block not found"
+                    },
+                    "409": {
+                        "description": "More than one block matches the key. Use a block UUID."
                     },
                     "422": {
-                        "description": "Invalid request or field values"
+                        "description": "Invalid update, duplicate block, or unsupported block type"
                     }
                 },
                 "security": [
@@ -864,6 +958,111 @@
                     },
                     "401": {
                         "description": "A valid authentication token was not provided with the request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/1.0/signings/{uuid}/layout": {
+            "get": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Get the signing layout",
+                "description": "Returns the flow, recipient orders and revision for a complete layout update. Recipient UUIDs match the id values from the recipient endpoints.",
+                "operationId": "getSigningLayout",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current signing layout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SigningLayoutResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Insufficient permissions"
+                    },
+                    "404": {
+                        "description": "Signing not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Signings"
+                ],
+                "summary": "Update the signing layout",
+                "description": "Read the layout first, then submit every recipient and its desired order with expected_revision. Equal orders in grouped mode let people sign together. Change orders to move recipients or entire groups. Approvals must remain first. Saves atomically and rejects stale layouts. Existing recipient order endpoints remain available for parallel and sequential flows.",
+                "operationId": "updateSigningLayout",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SigningLayoutUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Saved layout with normalized orders and a new revision",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SigningLayoutResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "403": {
+                        "description": "Insufficient permissions or signing is no longer editable"
+                    },
+                    "404": {
+                        "description": "Signing not found"
+                    },
+                    "422": {
+                        "description": "Invalid layout or stale revision; read the layout again before retrying"
                     }
                 },
                 "security": [
@@ -1299,7 +1498,7 @@
                     "Signings"
                 ],
                 "summary": "Update recipient order",
-                "description": "Update the order of a draft recipient within its recipient type group.",
+                "description": "Reorders one recipient in a parallel or sequential draft. For grouped signings, use PUT /api/1.0/signings/{uuid}/layout instead.",
                 "operationId": "updateRecipientOrder",
                 "parameters": [
                     {
@@ -1347,6 +1546,9 @@
                     },
                     "400": {
                         "description": "The signing cannot be edited"
+                    },
+                    "422": {
+                        "description": "Invalid order or grouped signing; use the layout endpoint for groups"
                     },
                     "401": {
                         "description": "A valid authentication token was not provided with the request"
@@ -2046,6 +2248,16 @@
                         "description": "Email of the user",
                         "type": "string",
                         "example": "john.doe@example.com"
+                    },
+                    "organizations": {
+                        "description": "Active organizations authorized for this token where the user still has membership.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "acme"
+                        ]
                     }
                 },
                 "type": "object"
@@ -2331,6 +2543,80 @@
                     }
                 ]
             },
+            "ContractBlockResource": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "order": {
+                        "type": "integer"
+                    },
+                    "key": {
+                        "description": "Template-defined integration key, when set.",
+                        "type": "string"
+                    },
+                    "content": {
+                        "description": "Rich text HTML for text blocks.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "value": {
+                        "description": "Value for form fields.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "options": {
+                        "description": "Settings specific to the block type.",
+                        "properties": {
+                            "embed_url": {
+                                "description": "Link stored on a video block.",
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "uri"
+                            },
+                            "choices": {
+                                "description": "Available values for a select or radio field.",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractBlockResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ContractBlocksUpdateResponse": {
+                "required": [
+                    "blocks"
+                ],
+                "properties": {
+                    "blocks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractBlockResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "ContractFieldResource": {
                 "properties": {
                     "id": {
@@ -2425,10 +2711,31 @@
                         "format": "uuid"
                     },
                     "fields": {
-                        "description": "Included in detail, creation and field-update responses.",
+                        "description": "Included in detail and creation responses.",
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/ContractFieldResource"
+                        }
+                    },
+                    "header": {
+                        "description": "Rich text header. Included in responses with contract fields.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "footer": {
+                        "description": "Rich text footer. Included in responses with contract fields.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "blocks": {
+                        "description": "Ordered tree returned by detail requests with include=blocks.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractBlockResource"
                         }
                     },
                     "created_at": {
@@ -2836,7 +3143,8 @@
                         "example": "parallel",
                         "enum": [
                             "parallel",
-                            "sequential"
+                            "sequential",
+                            "grouped"
                         ]
                     },
                     "completion_redirect_url": {
@@ -2862,6 +3170,57 @@
                         "description": "The date when this signing was last updated",
                         "type": "string",
                         "example": "2021-09-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningLayoutRecipient": {
+                "required": [
+                    "uuid",
+                    "order"
+                ],
+                "properties": {
+                    "uuid": {
+                        "description": "The id returned by the recipient endpoints.",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "order": {
+                        "description": "In grouped mode, recipients with the same order belong to the same step within their approval or signing phase. Saved group orders start at 1; parallel and sequential positions start at 0.",
+                        "type": "integer",
+                        "example": 1,
+                        "maximum": 10000,
+                        "minimum": 0
+                    }
+                },
+                "type": "object"
+            },
+            "SigningLayoutResource": {
+                "required": [
+                    "signing_order",
+                    "layout_revision",
+                    "recipients"
+                ],
+                "properties": {
+                    "signing_order": {
+                        "type": "string",
+                        "enum": [
+                            "parallel",
+                            "sequential",
+                            "grouped"
+                        ]
+                    },
+                    "layout_revision": {
+                        "description": "Pass this value as expected_revision when updating this layout.",
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 64
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SigningLayoutRecipient"
+                        }
                     }
                 },
                 "type": "object"
@@ -2900,7 +3259,8 @@
                         "example": "parallel",
                         "enum": [
                             "parallel",
-                            "sequential"
+                            "sequential",
+                            "grouped"
                         ]
                     },
                     "completion_redirect_url": {
@@ -2930,38 +3290,7 @@
                 },
                 "type": "object"
             },
-            "ContractStoreRequest": {
-                "required": [
-                    "template_id"
-                ],
-                "type": "object",
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ContractFieldsRequest"
-                    },
-                    {
-                        "properties": {
-                            "template_id": {
-                                "type": "string",
-                                "format": "uuid"
-                            },
-                            "name": {
-                                "type": "string",
-                                "maxLength": 255
-                            },
-                            "fields": {
-                                "description": "Optional initial values, addressed by template field key or UUID. Omitted fields retain template defaults.",
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/ContractFieldInput"
-                                }
-                            }
-                        },
-                        "type": "object"
-                    }
-                ]
-            },
-            "ContractFieldInput": {
+            "ContractFieldPrefill": {
                 "required": [
                     "value"
                 ],
@@ -2972,12 +3301,12 @@
                         "example": "customer_name"
                     },
                     "id": {
-                        "description": "Template field UUID at creation; copied field UUID when updating.",
+                        "description": "Template field UUID.",
                         "type": "string",
                         "format": "uuid"
                     },
                     "value": {
-                        "description": "Null clears the value; omitted fields are unchanged.",
+                        "description": "Null clears the value. Omitted fields retain their defaults.",
                         "type": [
                             "string",
                             "null"
@@ -2986,19 +3315,88 @@
                 },
                 "type": "object"
             },
-            "ContractFieldsRequest": {
+            "ContractStoreRequest": {
                 "required": [
-                    "fields"
+                    "template_id"
                 ],
                 "properties": {
+                    "template_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
                     "fields": {
+                        "description": "Optional initial values, addressed by template field key or UUID. Omitted fields retain template defaults.",
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ContractFieldInput"
+                            "$ref": "#/components/schemas/ContractFieldPrefill"
                         }
                     }
                 },
                 "type": "object"
+            },
+            "ContractBlocksUpdateRequest": {
+                "required": [
+                    "blocks"
+                ],
+                "properties": {
+                    "blocks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContractBlockUpdate"
+                        },
+                        "example": [
+                            {
+                                "key": "intro_text",
+                                "content": "<p>Updated introduction</p>"
+                            },
+                            {
+                                "key": "customer_name",
+                                "value": "Example AB"
+                            }
+                        ],
+                        "maxItems": 500,
+                        "minItems": 1
+                    }
+                },
+                "type": "object"
+            },
+            "ContractBlockUpdate": {
+                "description": "Supply exactly one of key or id, and either content for a text block or value for a form field.",
+                "properties": {
+                    "key": {
+                        "description": "The block integration key.",
+                        "type": "string",
+                        "example": "intro_text",
+                        "maxLength": 64
+                    },
+                    "id": {
+                        "description": "The block UUID in the draft contract.",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "content": {
+                        "description": "Replacement rich text HTML. Send null to clear it.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 65535
+                    },
+                    "value": {
+                        "description": "Replacement form field value. Send null to clear it.",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    }
+                },
+                "type": "object",
+                "additionalProperties": false
             },
             "SigningCancelRequest": {
                 "required": [
@@ -3175,17 +3573,64 @@
                         "example": "Please sign this document"
                     },
                     "signing_order": {
+                        "description": "Use GET and PUT /api/1.0/signings/{uuid}/layout to assign recipients to groups or change the complete layout with revision checking.",
                         "type": "string",
                         "example": "parallel",
                         "enum": [
                             "parallel",
-                            "sequential"
+                            "sequential",
+                            "grouped"
                         ]
                     },
                     "completion_redirect_url": {
                         "description": "HTTPS URL on a verified organization domain where a signer may be redirected after completing their tasks",
                         "type": "string",
                         "example": "https://example.com/thank-you"
+                    }
+                },
+                "type": "object"
+            },
+            "SigningLayoutUpdateRequest": {
+                "required": [
+                    "signing_order",
+                    "expected_revision",
+                    "recipients"
+                ],
+                "properties": {
+                    "signing_order": {
+                        "type": "string",
+                        "enum": [
+                            "parallel",
+                            "sequential",
+                            "grouped"
+                        ]
+                    },
+                    "expected_revision": {
+                        "description": "The layout_revision returned by GET /signings/{uuid}/layout. Read the layout again after a stale revision error.",
+                        "type": "string",
+                        "maxLength": 64,
+                        "minLength": 64
+                    },
+                    "recipients": {
+                        "description": "Every current recipient exactly once, approvals first, sorted by order within each recipient type. In grouped mode, equal orders sign together; later groups wait for everyone in the previous group. Sequential mode requires a distinct order per signer. Orders are normalized on save.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SigningLayoutRecipient"
+                        },
+                        "example": [
+                            {
+                                "uuid": "6b44887f-3ae9-4a1c-87c7-8acf92eaa801",
+                                "order": 1
+                            },
+                            {
+                                "uuid": "6b44887f-3ae9-4a1c-87c7-8acf92eaa802",
+                                "order": 1
+                            },
+                            {
+                                "uuid": "6b44887f-3ae9-4a1c-87c7-8acf92eaa803",
+                                "order": 2
+                            }
+                        ]
                     }
                 },
                 "type": "object"
@@ -3216,11 +3661,13 @@
                         "example": "Please sign this document"
                     },
                     "signing_order": {
+                        "description": "Use GET and PUT /api/1.0/signings/{uuid}/layout to assign recipients to groups or change the complete layout with revision checking.",
                         "type": "string",
                         "example": "parallel",
                         "enum": [
                             "parallel",
-                            "sequential"
+                            "sequential",
+                            "grouped"
                         ]
                     },
                     "completion_redirect_url": {
@@ -3278,7 +3725,7 @@
         "securitySchemes": {
             "oauth2": {
                 "type": "oauth2",
-                "description": "OAuth2 authorization code flow for API access",
+                "description": "OAuth2 authorization code flow for API access. Users explicitly select organizations on the consent screen. Tokens and refreshed tokens only access those organizations, subject to current membership and permissions. GET /api/1.0/me lists the authorized organizations. Requests to other organizations return 403. New authorizations require consent, including for previously approved applications.",
                 "flows": {
                     "authorizationCode": {
                         "authorizationUrl": "/oauth/authorize",
